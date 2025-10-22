@@ -1,6 +1,7 @@
 .vscode
 
 node_modules/
+.env
 
 #json files
 package-lock.json
