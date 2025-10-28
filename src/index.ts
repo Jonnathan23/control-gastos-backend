@@ -1,8 +1,19 @@
-import server from "./server";
-import colors from 'colors';
+import { Server } from "./app/presentation/servert";
+import { envs } from "./config";
+import { PostgreSqlDatabase } from "./data";
 
-const PORT = process.env.PORT || 3000;
+(() => {
+    main();
+})()
 
-server.listen(PORT, () => {
-    console.log(colors.cyan.bold(`Server is running on port ${PORT}`));
-})
+async function main() {
+    const urlDatabase = envs.IS_LOCAL_DATABASE ? envs.DATABASE_URL_LOCAL : envs.DATABASE_URL;
+
+    await PostgreSqlDatabase.connect({
+        urlDatabase: urlDatabase,
+        logging: false
+    });
+
+    new Server({ port: envs.PORT }).runApp();
+
+}
