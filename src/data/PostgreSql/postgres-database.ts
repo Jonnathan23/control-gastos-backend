@@ -13,7 +13,7 @@ export class PostgreSqlDatabase {
         const { urlDatabase, logging } = options;
 
         const db = new Sequelize(urlDatabase, {
-            models: [__dirname + "/../**/models/**/*"],
+            models: [__dirname + "./models/**"],
             logging: logging ? console.log : false,
         });
 
