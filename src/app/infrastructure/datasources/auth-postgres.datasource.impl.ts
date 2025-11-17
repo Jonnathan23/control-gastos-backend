@@ -1,37 +1,31 @@
-import { Users } from "../../../data/MongoDb/models/Users.model";
-import { AuthDataSource, CustomError, handleError, UserEntity } from "../../domain";
-import { LoginUserDto } from "../../domain/dtos/auth/login-user.dto";
-import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
+import Users from "../../../data/PostgreSql/models/Users.model";
+import { AuthDataSource, handleError, LoginUserDto, RegisterUserDto, UserEntity } from "../../domain";
 import { UserMapper } from "../mappers/user.mapper";
 
 
-export class AuthDataSourceMongoImpl implements AuthDataSource {
+export class AuthDataSourcePostgresImpl implements AuthDataSource {
 
-    constructor(
-
-    ) { }
+    constructor() { }
 
     async registerUser(registerUserDto: RegisterUserDto): Promise<UserEntity> {
         const { us_email, us_password } = registerUserDto;
 
         try {
-            const emailExist = await Users.findOne({ us_email });
-            if (emailExist) throw new Error('Email ya registrado');
+            const emailExist = await Users.findAll({ where: { us_email } });
+            if (emailExist.length) throw new Error('Email ya registrado');
 
             const user = await Users.create({ us_email, us_password });
-            user.save();
+            await user.save();
 
             const userEntity = UserMapper.userEntityFromObject(user);
             return userEntity;
-
         } catch (error) {
+            console.log(error);
             throw handleError(error);
         }
     }
 
-
     loginUser(LoginUserDto: LoginUserDto): Promise<UserEntity> {
         throw new Error("Method not implemented.");
     }
-
 }

@@ -1,7 +1,8 @@
 import { Router } from "express"
 import { AuthController } from "./auth.controller"
 import { AuthRepositoryImpl } from "../../infrastructure/repositories/auth.repository.impl"
-import { AuthDataSourceImpl } from "../../infrastructure/datasources/auth-mongo.datasource.impl"
+import { AuthDataSourceMongoImpl } from "../../infrastructure/datasources/auth-mongo.datasource.impl"
+import { AuthDataSourcePostgresImpl } from "../../infrastructure/datasources/auth-postgres.datasource.impl"
 
 
 export class AuthRoute {
@@ -9,9 +10,13 @@ export class AuthRoute {
     static get routes(): Router {
         const router = Router()
 
-        const authDataSource = new AuthDataSourceImpl()
+        const authDataSourceMongo = new AuthDataSourceMongoImpl()
+        const authDatasourcePostgres = new AuthDataSourcePostgresImpl()
 
-        const authRepository = new AuthRepositoryImpl(authDataSource)
+        const authRepository = new AuthRepositoryImpl(
+            //    authDataSourceMongo
+            authDatasourcePostgres
+        )
 
         const authController = new AuthController(authRepository)
 
