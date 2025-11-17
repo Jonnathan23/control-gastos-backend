@@ -11,6 +11,7 @@ import { MongoDatabase } from "./data/MongoDb/mongo-database";
 async function main() {
     const urlDatabase = envs.IS_LOCAL_DATABASE ? envs.DATABASE_URL_LOCAL : envs.DATABASE_URL;
 
+    //TODO: Identificar que base de datos usar
 
     await PostgreSqlDatabase.connect({
         urlDatabase: urlDatabase,
