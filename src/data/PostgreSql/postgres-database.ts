@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import colors from 'colors'
-
+import path from 'path';
 
 interface Options {
     urlDatabase: string;
@@ -13,7 +13,7 @@ export class PostgreSqlDatabase {
         const { urlDatabase, logging } = options;
 
         const db = new Sequelize(urlDatabase, {
-            models: [__dirname + "./models/**"],
+            models: [path.resolve(__dirname, 'models/**/*.model.{ts,js}')],
             logging: logging ? console.log : false,
         });
 

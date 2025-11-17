@@ -30,14 +30,14 @@ class Users extends Model {
         type: DataType.STRING,
         allowNull: false,
     })
-    declare email:string;
+    declare us_email:string;
 
 
     @Column({
         type: DataType.STRING,
         allowNull: false,
     })
-    declare password:string;
+    declare us_password:string;
     
 
     //* |------| | HasMany | |------|
