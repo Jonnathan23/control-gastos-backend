@@ -1,5 +1,4 @@
 import jwt, { SignOptions } from "jsonwebtoken";
-
 import { envs } from "../config";
 
 
@@ -7,7 +6,7 @@ const JWT_SEED = envs.JWT_SECRET;
 
 
 export class JwtAdapter {
-    static async generateToken(payload: Object, duration: SignOptions['expiresIn']): Promise<string | null> {
+    static async generateToken(payload: Object, duration: SignOptions['expiresIn'] = '1d'): Promise<string | null> {
         return new Promise((resolve) => {
             jwt.sign(payload, JWT_SEED, { expiresIn: duration }, (err, token) => {
                 console.log(err);

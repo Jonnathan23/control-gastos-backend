@@ -1,4 +1,5 @@
 import { Users } from "../../../data/MongoDb/models/Users.model";
+import { Hash } from "../../../utils/hash";
 import { AuthDataSource, CustomError, handleError, UserEntity } from "../../domain";
 import { LoginUserDto } from "../../domain/dtos/auth/login-user.dto";
 import { RegisterUserDto } from "../../domain/dtos/auth/register-user.dto";
@@ -16,9 +17,12 @@ export class AuthDataSourceMongoImpl implements AuthDataSource {
 
         try {
             const emailExist = await Users.findOne({ us_email });
-            if (emailExist) throw new Error('Email ya registrado');
+            if (emailExist) throw CustomError.conflict('Email ya registrado');
 
-            const user = await Users.create({ us_email, us_password });
+            const user = await Users.create({
+                us_email,
+                us_password: Hash.hash(us_password)
+            });
             user.save();
 
             const userEntity = UserMapper.userEntityFromObject(user);

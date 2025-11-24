@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
 import { AuthRepository, CustomError, RegisterUserDto } from "../../domain";
+import { RegisterUser } from "../use-cases/auth/register-user.use-case";
+import { JwtAdapter } from "../../../utils/jwt";
 
 export class AuthController {
 
     constructor(
         private readonly authRepository: AuthRepository
+        
     ) { }
 
     private handleError = (error: unknown, res: Response) => {
@@ -21,9 +24,16 @@ export class AuthController {
         if (error) return this.handleError(error, res);
 
         try {
-            const user = await this.authRepository.registerUser(registerUserDto!);
 
-            return res.status(201).json(user);
+            const registerUser = new RegisterUser(this.authRepository, JwtAdapter.generateToken)
+            const { token, user } = await registerUser.execute(registerUserDto!);            
+
+            res.cookie('acces_token', token, {
+                httpOnly: true,
+                maxAge: 1000 * 60 * 60 * 2 // 15 minutos, por ejemplo
+            })
+
+            return res.status(201).json({ user });
         } catch (error) {
             this.handleError(error, res);
 

@@ -1,5 +1,5 @@
 import Users from "../../../data/PostgreSql/models/Users.model";
-import { AuthDataSource, handleError, LoginUserDto, RegisterUserDto, UserEntity } from "../../domain";
+import { AuthDataSource, CustomError, handleError, LoginUserDto, RegisterUserDto, UserEntity } from "../../domain";
 import { UserMapper } from "../mappers/user.mapper";
 
 
@@ -12,7 +12,7 @@ export class AuthDataSourcePostgresImpl implements AuthDataSource {
 
         try {
             const emailExist = await Users.findAll({ where: { us_email } });
-            if (emailExist.length) throw new Error('Email ya registrado');
+            if (emailExist.length) throw CustomError.conflict('Email ya registrado');
 
             const user = await Users.create({ us_email, us_password });
             await user.save();
